@@ -53,10 +53,16 @@ resource "aws_route_table" "tf-public-rt" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.tf-igw.id
   }
+  tags = {
+    "Name" = "tf-public-rt"
+  }
 }
 
 resource "aws_route_table" "tf-private-rt" {
   vpc_id = aws_vpc.tf_vpc.id
+  tags = {
+    "Name" = "tf-private-rt"
+  }
 }
 
 resource "aws_route_table_association" "public-sub" {
@@ -67,4 +73,13 @@ resource "aws_route_table_association" "public-sub" {
 resource "aws_route_table_association" "private-sub" {
   route_table_id = aws_route_table.tf-private-rt.id
   subnet_id      = aws_subnet.tf-private-subnet.id
+}
+
+resource "aws_instance" "app_server" {
+  ami           = "ami-053b12d3152c0cc71"
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.tf-public-subnet.id
+  tags = {
+    Name = "tf-ec2"
+  }
 }
