@@ -30,6 +30,11 @@ variable "instance_object" {
       os            = "linux"
       description   = "db server"
     }
+    test_server = {
+      instance_type = "t2.large"
+      os            = "SunOS"
+      description   = "test server"
+    }
   }
 }
 
@@ -40,7 +45,8 @@ locals {
     for person in var.person_map : person if person.age == "69"
   ]
   newMapWithFilteredAge = { for person in local.filterByAge : person.name => person.age }
-
+  filterInstanceByOS    = { for key, val in var.instance_object : key => val if val.os == "windows" }
+  mapOfInstance         = { for key, val in var.instance_object : val.instance_type => val... }
 }
 
 output "print_number_list" {
@@ -54,4 +60,10 @@ output "filter_By_Age" {
 }
 output "new_Map_With_Filtered_Age" {
   value = local.newMapWithFilteredAge
+}
+output "filtered_instance" {
+  value = local.filterInstanceByOS
+}
+output "map_with_Instance_as_key" {
+  value = local.mapOfInstance
 }
